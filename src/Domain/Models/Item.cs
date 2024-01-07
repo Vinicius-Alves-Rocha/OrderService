@@ -14,6 +14,7 @@ namespace Domain.Models
         [Required]
         [MaxLength(50)]
         public string ProductName { get; set; }
+        public Guid OrderId { get; set; }
         public virtual Order Order { get; set; }
     }
 }

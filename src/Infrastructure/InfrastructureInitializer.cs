@@ -1,5 +1,7 @@
 ﻿using Infrastructure.Common;
+using Infrastructure.Repositories.Context;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -7,14 +9,11 @@ namespace Infrastructure
 {
     public static class InfrastructureInitializer
     {
-        public static void ConfigureInfrastructure(this IApplicationBuilder applicationBuilder, string[] args)
+        public static void ConfigureInfrastructure(this IServiceCollection serviceCollection)
         {
             //applicationBuilder.subs
-            CreateHostBuilder(args).Build().Run();
+            serviceCollection.AddDbContext<OrderDbContext>();
+            serviceCollection.AddHostedService<KafkaConsumerConfig>();
         }
-
-        private static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
-                .ConfigureServices((collection) => collection.AddHostedService<KafkaConsumerConfig>());
     }
 }

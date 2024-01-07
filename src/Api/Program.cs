@@ -11,7 +11,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.ConfigureDependencyInjection();
-builder.Services.AddDbContext<OrderDbContext>();
+builder.Services.ConfigureInfrastructure();
 
 var app = builder.Build();
 
@@ -25,7 +25,5 @@ if (app.Environment.IsDevelopment())
 app.UseAuthorization();
 
 app.MapControllers();
-
-app.ConfigureInfrastructure(args);
 
 app.Run();

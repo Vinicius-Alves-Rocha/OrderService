@@ -1,29 +1,20 @@
 ﻿using Confluent.Kafka;
-using Domain.Models;
-using Infrastructure.Consumers;
-using Infrastructure.Interfaces;
+using Infrastructure.Consumers.Interfaces;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.Json;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace Infrastructure.Common
 {
-    public class KafkaConsumerConfig : IHostedService
+    public class KafkaConsumerConfig : BackgroundService
     {
-        private readonly ICreateOrderConsumer createOrderConsumer;
+        private readonly IServiceProvider serviceProvider;
         private IConsumer<Null, string> consumer { get; init; }
 
         private const string CreateOrderTopic = "CreateOrderTopic";
 
-        public KafkaConsumerConfig(ICreateOrderConsumer createOrderConsumer)
+        public KafkaConsumerConfig(IServiceProvider serviceProvider)
         {
-            this.createOrderConsumer = createOrderConsumer;
-
+            this.serviceProvider = serviceProvider;
             var consumerConfig = new ConsumerConfig()
             {
                 BootstrapServers = "localhost:9092",
@@ -33,25 +24,26 @@ namespace Infrastructure.Common
             consumer = new ConsumerBuilder<Null, string>(consumerConfig).Build();
         }
 
-        public Task StartAsync(CancellationToken cancellationToken)
+        protected override Task ExecuteAsync(CancellationToken stoppingToken) => Task.Run(async () =>
         {
-            while (cancellationToken.IsCancellationRequested)
+            while (!stoppingToken.IsCancellationRequested)
             {
                 consumer.Subscribe(CreateOrderTopic);
 
-                var consumerMessage = consumer.Consume(cancellationToken);
-                createOrderConsumer.HandleKafkaMessage(consumerMessage.Message.Value);
+                var consumerMessage = consumer.Consume(stoppingToken);
+                using (var scope = serviceProvider.CreateScope())
+                {
+                    var createOrderConsumer = scope.ServiceProvider.GetService<ICreateOrderConsumer>();
+                    if (createOrderConsumer == null)
+                    {
+                        return;
+                    }
+
+                    createOrderConsumer.HandleKafkaMessage(consumerMessage.Message.Value);
+                }
 
                 consumer.Close();
             }
-
-            return Task.CompletedTask;
-        }
-
-        public Task StopAsync(CancellationToken cancellationToken)
-        {
-            consumer?.Dispose();
-            return Task.CompletedTask;
-        }
+        });
     }
 }

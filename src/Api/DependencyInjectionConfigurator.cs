@@ -1,6 +1,10 @@
 ﻿
 using Domain.Interfaces.Repositories;
-using Infrastructure.Interfaces;
+using Infrastructure.Common;
+using Infrastructure.Consumers;
+using Infrastructure.Consumers.Interfaces;
+using Infrastructure.Producers;
+using Infrastructure.Repositories;
 
 namespace Api
 {
@@ -8,9 +12,9 @@ namespace Api
     {
         public static void ConfigureDependencyInjection(this IServiceCollection serviceCollection)
         {
-            serviceCollection.AddTransient<ICreateItemProducer>();
-            serviceCollection.AddTransient<IOrderRepository>();
-            serviceCollection.AddTransient<ICreateOrderConsumer>();
+            serviceCollection.AddTransient<ICreateItemProducer, CreateItemProducer>();
+            serviceCollection.AddTransient<IOrderRepository, OrderRepository>();
+            serviceCollection.AddTransient<ICreateOrderConsumer, CreateOrderConsumer>();
         }
     }
 }

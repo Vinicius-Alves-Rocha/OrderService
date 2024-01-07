@@ -1,6 +1,6 @@
 ﻿using Domain.Interfaces.Repositories;
 using Domain.Models;
-using Infrastructure.Interfaces;
+using Infrastructure.Consumers.Interfaces;
 using System.Text.Json;
 
 namespace Infrastructure.Consumers

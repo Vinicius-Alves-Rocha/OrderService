@@ -15,7 +15,8 @@ namespace Api.Controllers
             this.mediator = mediator;
         }
 
-        [HttpGet(Name = "GetOrder")]
+        [HttpGet]
+        [Route(""), ActionName("Get")]
         public async Task<IActionResult> Get()
         {
             var query = new GetOrderQuery();
@@ -25,7 +26,8 @@ namespace Api.Controllers
             return Ok(result);
         }
 
-        [HttpGet(Name = "GetById/{orderId:guid}")]
+        [HttpGet]
+        [Route("{orderId:guid}"), ActionName("GetById")]
         public async Task<IActionResult> GetById([FromRoute] Guid orderId)
         {
             var query = new GetOrderByIdQuery(orderId);

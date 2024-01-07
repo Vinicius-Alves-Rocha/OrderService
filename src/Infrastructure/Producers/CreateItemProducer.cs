@@ -5,7 +5,7 @@ using System.Text.Json;
 
 namespace Infrastructure.Producers
 {
-    internal class CreateItemProducer : ICreateItemProducer
+    public class CreateItemProducer : ICreateItemProducer
     {
         public async Task ProduceMessageAsync(Item item)
         {
