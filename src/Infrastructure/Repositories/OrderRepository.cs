@@ -19,7 +19,7 @@ namespace Infrastructure.Repositories
         {
             using (OrderDbContext db = new())
             {
-                return await db.Order.FirstOrDefaultAsync(o => o.OrderId == orderId);
+                return await db.Order.Include(x => x.Items).FirstOrDefaultAsync(o => o.OrderId == orderId);
             }
         }
 

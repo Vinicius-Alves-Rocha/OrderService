@@ -28,7 +28,7 @@ namespace Infrastructure.Consumers
 
             var changesInDb = await orderRepository.InsertAsync(createOrderObject);
 
-            if (changesInDb <= 0)
+            if (changesInDb > 0)
             {
                 foreach (var item in createOrderObject.Items)
                 {

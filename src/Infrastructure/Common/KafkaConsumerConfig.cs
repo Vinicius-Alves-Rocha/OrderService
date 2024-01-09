@@ -34,16 +34,12 @@ namespace Infrastructure.Common
                 using (var scope = serviceProvider.CreateScope())
                 {
                     var createOrderConsumer = scope.ServiceProvider.GetService<ICreateOrderConsumer>();
-                    if (createOrderConsumer == null)
-                    {
-                        return;
-                    }
 
-                    createOrderConsumer.HandleKafkaMessage(consumerMessage.Message.Value);
+                    createOrderConsumer?.HandleKafkaMessage(consumerMessage.Message.Value);
                 }
-
-                consumer.Close();
             }
+
+            consumer.Close();
         });
     }
 }

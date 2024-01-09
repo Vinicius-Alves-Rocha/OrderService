@@ -44,7 +44,7 @@ namespace Infrastructure.Repositories.Context
             modelBuilder.Entity<Order>()
                 .HasMany(o => o.Items)
                 .WithOne(i => i.Order)
-                .HasForeignKey(o => o.ItemId);
+                .HasForeignKey(i => i.OrderId);
         }
         private void ConfigureItemModelBinding(ModelBuilder modelBuilder)
         {

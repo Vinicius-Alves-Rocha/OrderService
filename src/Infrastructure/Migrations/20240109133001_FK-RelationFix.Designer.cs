@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(OrderDbContext))]
-    [Migration("20240107152415_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20240109133001_FK-RelationFix")]
+    partial class FKRelationFix
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -27,6 +27,7 @@ namespace Infrastructure.Migrations
             modelBuilder.Entity("Domain.Models.Item", b =>
                 {
                     b.Property<Guid>("ItemId")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("OrderId")
@@ -38,6 +39,8 @@ namespace Infrastructure.Migrations
                         .HasColumnType("nvarchar(50)");
 
                     b.HasKey("ItemId");
+
+                    b.HasIndex("OrderId");
 
                     b.ToTable("Item");
                 });
@@ -65,7 +68,7 @@ namespace Infrastructure.Migrations
                 {
                     b.HasOne("Domain.Models.Order", "Order")
                         .WithMany("Items")
-                        .HasForeignKey("ItemId")
+                        .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
